@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.alanfernandes.locadoraveiculos.dto.VeiculoRequest;
-import com.alanfernandes.locadoraveiculos.exception.VeiculoNotFoundException;
 import com.alanfernandes.locadoraveiculos.makeResponse.MakeResponse;
 import com.alanfernandes.locadoraveiculos.model.Veiculo;
 import com.alanfernandes.locadoraveiculos.service.VeiculoService;
+
+import javassist.NotFoundException;
 
 @RestController
 @RequestMapping(value = "api/v1")
@@ -33,61 +33,59 @@ public class VeiculoController {
 		this.veiculoService = veiculoService;
 	}
 
-	@PostMapping(value = "/veiculos")
-	public ResponseEntity<MakeResponse<Veiculo>> save(@Valid @RequestBody VeiculoRequest veiculoRequest) {
-		try {
-			MakeResponse<Veiculo> makeResponse = new MakeResponse<Veiculo>(this.veiculoService.save(veiculoRequest),
-					"Veículo cadastrado com sucesso!");
-			return new ResponseEntity<MakeResponse<Veiculo>>(makeResponse, HttpStatus.CREATED);
-		} catch (IllegalArgumentException e) {
-			MakeResponse<Veiculo> makeResponse = new MakeResponse<Veiculo>(null, e.getMessage());
-			return new ResponseEntity<MakeResponse<Veiculo>>(makeResponse, HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@GetMapping(value = "/veiculos")
+	@GetMapping(value = "/veiculo")
 	public ResponseEntity<List<Veiculo>> findAll() {
 		return new ResponseEntity<List<Veiculo>>(this.veiculoService.findAll(), HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/veiculos/{id}")
-	public ResponseEntity<Veiculo> findById(@PathVariable Long id) {
+	@GetMapping(value = "/veiculo/{id}")
+	public ResponseEntity<MakeResponse<Veiculo>> findById(@PathVariable Long id) {
+		Veiculo veiculo = null;
 		try {
-			return new ResponseEntity<Veiculo>(this.veiculoService.findById(id), HttpStatus.OK);
-		} catch (VeiculoNotFoundException e) {
-			return new ResponseEntity<Veiculo>(HttpStatus.NOT_FOUND);
+			veiculo = this.veiculoService.findById(id);
+			return new ResponseEntity<MakeResponse<Veiculo>>(new MakeResponse<Veiculo>(veiculo, "success"),
+					HttpStatus.OK);
+		} catch (NotFoundException e) {
+			return new ResponseEntity<MakeResponse<Veiculo>>(new MakeResponse<Veiculo>(veiculo, e.getMessage()),
+					HttpStatus.NOT_FOUND);
 		}
 	}
 
-	@GetMapping(value = "/veiculos/findByMarca")
+	@GetMapping(value = "/veiculo/findByMarca")
 	public ResponseEntity<List<Veiculo>> findByMarca(@RequestParam(name = "marca", required = true) String marca) {
 		return new ResponseEntity<List<Veiculo>>(this.veiculoService.findByMarca(marca), HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/veiculos/findByAno")
+	@GetMapping(value = "/veiculo/findByAno")
 	public ResponseEntity<List<Veiculo>> findByAno(@RequestParam(name = "ano", required = true) Long ano) {
 		return new ResponseEntity<List<Veiculo>>(this.veiculoService.findByAno(ano), HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/veiculos/findByModelo")
+	@GetMapping(value = "/veiculo/findByModelo")
 	public ResponseEntity<List<Veiculo>> findByModelo(@RequestParam(name = "modelo", required = true) String modelo) {
 		return new ResponseEntity<List<Veiculo>>(this.veiculoService.findByModelo(modelo), HttpStatus.OK);
 	}
 
-	public ResponseEntity<Veiculo> findByPlaca(@RequestParam(name = "placa", required = true) String placa) {
+	public ResponseEntity<MakeResponse<Veiculo>> findByPlaca(
+			@RequestParam(name = "placa", required = true) String placa) {
+		Veiculo veiculo = null;
 		try {
-			return new ResponseEntity<Veiculo>(this.veiculoService.findByPlaca(placa), HttpStatus.OK);
-		} catch (VeiculoNotFoundException e) {
-			return new ResponseEntity<Veiculo>(HttpStatus.NOT_FOUND);
+			veiculo = this.veiculoService.findByPlaca(placa);
+			return new ResponseEntity<MakeResponse<Veiculo>>(
+					new MakeResponse<Veiculo>(veiculo, "veículo consultado com sucesso!"), HttpStatus.ACCEPTED);
+		} catch (NotFoundException e) {
+			return new ResponseEntity<MakeResponse<Veiculo>>(new MakeResponse<Veiculo>(veiculo, e.getMessage()),
+					HttpStatus.ACCEPTED);
 		}
+
 	}
 
-	@DeleteMapping(value = "/veiculos/{id}")
+	@DeleteMapping(value = "/veiculo/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		try {
 			this.veiculoService.deleteById(id);
 			return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
-		} catch (VeiculoNotFoundException e) {
+		} catch (NotFoundException e) {
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 		}
 	}

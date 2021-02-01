@@ -3,39 +3,47 @@ package com.alanfernandes.locadoraveiculos.service;
 import java.util.List;
 
 import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
 import com.alanfernandes.locadoraveiculos.dto.VeiculoRequest;
-import com.alanfernandes.locadoraveiculos.exception.VeiculoNotFoundException;
+import com.alanfernandes.locadoraveiculos.mapper.VeiculoMapper;
+import com.alanfernandes.locadoraveiculos.model.Loja;
 import com.alanfernandes.locadoraveiculos.model.Veiculo;
 import com.alanfernandes.locadoraveiculos.repository.VeiculoRepository;
 
+import javassist.NotFoundException;
+
 @Service
-public class VeiculoService {
+public class VeiculoService extends GenericService<Veiculo, VeiculoRepository> {
 
 	private VeiculoRepository veiculoRepository;
 
-	public VeiculoService(@Autowired VeiculoRepository veiculoRepository) {
+	private VeiculoMapper veiculoMapper;
+
+	private LojaService lojaService;
+
+	@Autowired
+	public VeiculoService(VeiculoRepository veiculoRepository, VeiculoMapper veiculoMapper, LojaService lojaService) {
 		super();
 		this.veiculoRepository = veiculoRepository;
+		this.veiculoMapper = veiculoMapper;
+		this.lojaService = lojaService;
 	}
 
 	@Transactional
-	public Veiculo save(VeiculoRequest veiculoRequest) {
-		Veiculo veiculo = veiculoRequest.getVeiculo(veiculoRequest);
+	public Veiculo save(VeiculoRequest veiculoRequest, Long idLoja) throws NotFoundException {
+
+		Loja loja = lojaService.findById(idLoja);
+
+		Veiculo veiculo = veiculoMapper.veiculoRequestToVeiculo(veiculoRequest);
+
+		veiculo.setLoja(loja);
+
 		boolean doesNotExist = !this.veiculoRepository.findByPlaca(veiculo.getPlaca()).isPresent();
 		Assert.isTrue(doesNotExist, "Já existe um veiculo cadastrado com esta placa");
 		this.veiculoRepository.saveAndFlush(veiculo);
 		return veiculo;
-	}
-
-	@Transactional
-	public void deleteById(Long id) {
-		Veiculo veiculo = this.findById(id);
-		this.veiculoRepository.delete(veiculo);
 	}
 
 	public List<Veiculo> findByMarca(String marca) {
@@ -50,19 +58,9 @@ public class VeiculoService {
 		return this.veiculoRepository.findByModelo(modelo);
 	}
 
-	public Veiculo findByPlaca(String placa) {
+	public Veiculo findByPlaca(String placa) throws NotFoundException {
 		Veiculo veiculo = this.veiculoRepository.findByPlaca(placa)
-				.orElseThrow(() -> new VeiculoNotFoundException("Veículo com placa " + placa + " não encontrado."));
-		return veiculo;
-	}
-
-	public List<Veiculo> findAll() {
-		return this.veiculoRepository.findAll();
-	}
-
-	public Veiculo findById(Long id) {
-		Veiculo veiculo = this.veiculoRepository.findById(id)
-				.orElseThrow(() -> new VeiculoNotFoundException("Veículo com " + id + " não encontrado"));
+				.orElseThrow(() -> new NotFoundException("Veículo com placa " + placa + " não encontrado."));
 		return veiculo;
 	}
 

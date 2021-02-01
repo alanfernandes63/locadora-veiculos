@@ -5,7 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +17,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Endereco {
+
+	public Endereco() {
+		super();
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,10 +42,14 @@ public class Endereco {
 	@NotBlank
 	private String cidade;
 
-	@Column(name = "cidade", nullable = false)
+	@Column(name = "uf", nullable = false)
 	@NotBlank
 	private String uf;
 
 	@Column(name = "numero", nullable = false)
 	private Long numero;
+
+	@OneToOne(mappedBy = "endereco")
+	@JsonBackReference
+	private Loja loja;
 }
