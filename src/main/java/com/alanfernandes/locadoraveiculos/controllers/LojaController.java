@@ -1,17 +1,5 @@
 package com.alanfernandes.locadoraveiculos.controllers;
 
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.alanfernandes.locadoraveiculos.dto.LojaRequest;
 import com.alanfernandes.locadoraveiculos.dto.VeiculoRequest;
 import com.alanfernandes.locadoraveiculos.makeResponse.MakeResponse;
@@ -23,16 +11,22 @@ import com.alanfernandes.locadoraveiculos.model.Veiculo;
 import com.alanfernandes.locadoraveiculos.service.EnderecoService;
 import com.alanfernandes.locadoraveiculos.service.LojaService;
 import com.alanfernandes.locadoraveiculos.service.VeiculoService;
-
 import javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
-@RequestMapping(value = "api/v1/lojas")
+@RequestMapping(value = "api/v1/loja")
 public class LojaController {
 
 	private LojaService lojaService;
-
-	private EnderecoService enderecoService;
 
 	private LojaMapper lojaMapper;
 
@@ -45,7 +39,6 @@ public class LojaController {
 			EnderecoMapper enderecoMapper, VeiculoService veiculoService) {
 		super();
 		this.lojaService = lojaService;
-		this.enderecoService = enderecoService;
 		this.lojaMapper = lojaMapper;
 		this.enderecoMapper = enderecoMapper;
 		this.veiculoService = veiculoService;
@@ -59,20 +52,17 @@ public class LojaController {
 			return new ResponseEntity<MakeResponse<Loja>>(new MakeResponse<Loja>(loja, "success"), HttpStatus.OK);
 		} catch (NotFoundException e) {
 			return new ResponseEntity<MakeResponse<Loja>>(new MakeResponse<Loja>(loja, e.getMessage()),
-					HttpStatus.NOT_FOUND);
+					HttpStatus.BAD_REQUEST);
 		}
 	}
 
 	@PostMapping()
 	public ResponseEntity<MakeResponse<Loja>> save(@Valid @RequestBody LojaRequest lojaRequest) {
 
-		Endereco endereco = enderecoMapper.enderecoRequestToEndereco(lojaRequest.getEndereco());
-
-		enderecoService.save(endereco);
-
 		Loja loja = lojaMapper.lojaRequestToLoja(lojaRequest);
+		Endereco endereco= enderecoMapper
+				.enderecoRequestToEndereco(lojaRequest.getEnderecoRequest());
 		loja.setEndereco(endereco);
-
 		Loja newLoja = lojaService.save(loja);
 
 		MakeResponse<Loja> makeResponse = new MakeResponse<Loja>(newLoja, "succsses");
@@ -80,7 +70,7 @@ public class LojaController {
 
 	}
 
-	@PostMapping(value = "/{idLoja}/veiculos")
+	@PostMapping(value = "/{idLoja}/veiculo")
 	public ResponseEntity<MakeResponse<Veiculo>> save(@PathVariable(required = true) Long idLoja,
 			@Valid @RequestBody VeiculoRequest veiculoRequest) {
 		try {
@@ -93,6 +83,17 @@ public class LojaController {
 		}catch (NotFoundException e) {
 			return new ResponseEntity<MakeResponse<Veiculo>>(new MakeResponse<Veiculo>(null, "Loja não encontrada"), HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	/*@GetMapping(value = "/{idLoja}/veiculo")
+	public Page<Loja> listVeiculos(@PathVariable Long idLoja, Pageable pageable){
+		//return new ArrayList<>();
+		return lojaService.list(pageable);
+	}*/
+
+	@GetMapping(value = "/{idLoja}/veiculo")
+	public Page<Veiculo> listVeiculos(@PathVariable Long idLoja, Pageable pageable){
+		return lojaService.listarVeiculos(idLoja, pageable);
 	}
 
 }

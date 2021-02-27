@@ -6,11 +6,11 @@ import javax.validation.constraints.NotNull;
 
 import com.alanfernandes.locadoraveiculos.model.Endereco;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 public class LojaRequest {
 
 	@NotBlank
@@ -19,6 +19,6 @@ public class LojaRequest {
 
 	@NotNull
 	@Valid
-	private EnderecoRequest endereco;
+	private EnderecoRequest enderecoRequest;
 
 }

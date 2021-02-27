@@ -3,6 +3,7 @@ package com.alanfernandes.locadoraveiculos.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.alanfernandes.locadoraveiculos.enums.UF;
 import com.alanfernandes.locadoraveiculos.model.Endereco;
 
 import lombok.Getter;
@@ -29,13 +30,12 @@ public class EnderecoRequest {
 	private String cidade;
 
 	@NotNull
-	@NotBlank
-	private String uf;
+	private UF uf;
 
 	@NotNull
 	private Long numero;
 
-	public Endereco getEndereco(EnderecoRequest enderecoRequest) {
+	public Endereco enderecoRequestToEndereco(EnderecoRequest enderecoRequest) {
 		Endereco endereco = new Endereco();
 
 		endereco.setCep(enderecoRequest.getCep());

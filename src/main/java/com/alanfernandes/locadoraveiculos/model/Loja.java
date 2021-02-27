@@ -1,43 +1,35 @@
 package com.alanfernandes.locadoraveiculos.model;
 
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import lombok.Data;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
+@Table(name = "loja")
 public class Loja {
 
-	public Loja() {
-		super();
-	}
+    public Loja() {
+        super();
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Column(name = "nome")
-	private String nome;
+    @Column(name = "nome")
+    private String nome;
 
-	@OneToOne
-	@JoinColumn(name = "adress_id", referencedColumnName = "id")
-	@JsonManagedReference
-	private Endereco endereco;
+    @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @JoinColumn(name = "adress_id", referencedColumnName = "id")
+    @JsonManagedReference
+    private Endereco endereco;
 
-	@OneToMany(mappedBy = "loja", fetch = FetchType.LAZY)
-	@JsonManagedReference
-	private Set<Veiculo> veiculos;
+    @OneToMany(targetEntity = Veiculo.class, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "loja_id")
+    private Set<Veiculo> veiculos = new HashSet<>();
 
 }

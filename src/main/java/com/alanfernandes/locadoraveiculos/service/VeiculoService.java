@@ -1,5 +1,6 @@
 package com.alanfernandes.locadoraveiculos.service;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -38,11 +39,10 @@ public class VeiculoService extends GenericService<Veiculo, VeiculoRepository> {
 
 		Veiculo veiculo = veiculoMapper.veiculoRequestToVeiculo(veiculoRequest);
 
-		veiculo.setLoja(loja);
-
 		boolean doesNotExist = !this.veiculoRepository.findByPlaca(veiculo.getPlaca()).isPresent();
 		Assert.isTrue(doesNotExist, "Já existe um veiculo cadastrado com esta placa");
-		this.veiculoRepository.saveAndFlush(veiculo);
+		loja.getVeiculos().add(veiculo);
+		lojaService.save(loja);
 		return veiculo;
 	}
 
@@ -63,5 +63,4 @@ public class VeiculoService extends GenericService<Veiculo, VeiculoRepository> {
 				.orElseThrow(() -> new NotFoundException("Veículo com placa " + placa + " não encontrado."));
 		return veiculo;
 	}
-
 }

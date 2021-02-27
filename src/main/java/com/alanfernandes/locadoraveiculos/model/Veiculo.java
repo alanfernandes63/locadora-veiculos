@@ -1,51 +1,35 @@
 package com.alanfernandes.locadoraveiculos.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import lombok.Data;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import lombok.Getter;
-import lombok.Setter;
+import java.math.BigInteger;
 
 @Entity
-@Table(name = "veiculo", uniqueConstraints = @UniqueConstraint(columnNames = "placa"))
-@Getter
-@Setter
+@Table(name = "veiculos", uniqueConstraints = @UniqueConstraint(columnNames = "placa"))
+@Data
 public class Veiculo {
 
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Id
-	Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    Long id;
 
-	@Column(name = "modelo", nullable = false)
-	@NotBlank
-	String modelo;
+    @Column(name = "modelo", nullable = false)
+    @NotBlank(message = "O modelo do veículo não estar em branco")
+    String modelo;
 
-	@Column(name = "ano", nullable = false, length = 4)
-	Long ano;
+    @Column(name = "ano", nullable = false, length = 4)
+    Long ano;
 
-	@Column(name = "placa", nullable = false)
-	String placa;
+    @Column(name = "placa", nullable = false)
+    String placa;
 
-	@Column(name = "marca", nullable = false)
-	String marca;
+    @Column(name = "marca", nullable = false)
+    String marca;
 
-	@ManyToOne
-	@JoinColumn(name = "loja_id", nullable = false)
-	@JsonBackReference
-	Loja loja;
-
-	public Veiculo() {
-		super();
-	}
+    public Veiculo() {
+        super();
+    }
 
 }

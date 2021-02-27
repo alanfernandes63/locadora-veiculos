@@ -2,6 +2,7 @@ package com.alanfernandes.locadoraveiculos.controllers;
 
 import javax.validation.Valid;
 
+import com.alanfernandes.locadoraveiculos.enums.UF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class EnderecoController {
 
 	@PostMapping(value = "/endereco")
 	public ResponseEntity<MakeResponse<Endereco>> save(@Valid @RequestBody EnderecoRequest enderecoRequest) {
-		Endereco endereco = this.enderecoService.save(enderecoRequest.getEndereco(enderecoRequest));
+		Endereco endereco = this.enderecoService.save(enderecoRequest.enderecoRequestToEndereco(enderecoRequest));
 		MakeResponse<Endereco> makeEndereco = new MakeResponse<Endereco>(endereco, "Salvo com sucesso!");
 		return new ResponseEntity<MakeResponse<Endereco>>(makeEndereco, HttpStatus.CREATED);
 	}
