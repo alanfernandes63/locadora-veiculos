@@ -8,3 +8,5 @@ hibernate, além disso aprender um pouco mais sobre SQL e boas práticas no dese
 - Spring
 - Hibernate
 - PostgreSQL
+- Lombok
+- Mapstruct
