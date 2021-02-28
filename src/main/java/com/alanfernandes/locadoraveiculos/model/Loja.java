@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "loja")
+@Table(name = "lojas")
 public class Loja {
 
     public Loja() {
@@ -27,9 +27,9 @@ public class Loja {
     @JoinColumn(name = "adress_id", referencedColumnName = "id")
     @JsonManagedReference
     private Endereco endereco;
-
+/*
     @OneToMany(targetEntity = Veiculo.class, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "loja_id")
     private Set<Veiculo> veiculos = new HashSet<>();
-
+*/
 }

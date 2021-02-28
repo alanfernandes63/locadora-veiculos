@@ -15,10 +15,6 @@ public class LojaService extends GenericService<Loja, LojaRepository> {
     @Autowired
     private LojaRepository lojaRepository;
 
-
-    @Autowired
-    private VeiculoRepository veiculoRepository;
-
     @Autowired
     public LojaService(LojaRepository lojaRepository) {
         super();
@@ -26,9 +22,5 @@ public class LojaService extends GenericService<Loja, LojaRepository> {
 
     public Page<Loja> list(Pageable pageable) {
         return lojaRepository.findAll(pageable);
-    }
-
-    public Page<Veiculo> listarVeiculos(Long idLoja, Pageable pageable) {
-        return veiculoRepository.listarVeiculos(idLoja, pageable);
     }
 }

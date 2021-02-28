@@ -7,13 +7,13 @@ import lombok.Setter;
 @Setter
 public class MakeResponse<T> {
 
-	private T entity;
+	private T payload;
 
 	private String message;
 
-	public MakeResponse(T entity, String message) {
+	public MakeResponse(T payload, String message) {
 		super();
-		this.entity = entity;
+		this.payload = payload;
 		this.message = message;
 	}
 

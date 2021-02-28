@@ -1,5 +1,6 @@
 package com.alanfernandes.locadoraveiculos.repository;
 
+import com.alanfernandes.locadoraveiculos.model.Loja;
 import com.alanfernandes.locadoraveiculos.model.Veiculo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,8 @@ public interface VeiculoRepository extends JpaRepository<Veiculo, Long> {
 
     public Optional<Veiculo> findByPlaca(String placa);
 
-    @Query(value = "select * from veiculos v where v.loja_id =:idLoja", nativeQuery = true)
-    Page<Veiculo> listarVeiculos(@Param("idLoja") Long idLoja, Pageable pageable);
+    //@Query(value = "select * from veiculos v where v.loja_id =:idLoja", nativeQuery = true)
+    //Page<Veiculo> listarVeiculos(@Param("idLoja") Long idLoja, Pageable pageable);
+    Page<Veiculo> findByLoja(Loja loja, Pageable pageable);
 
 }

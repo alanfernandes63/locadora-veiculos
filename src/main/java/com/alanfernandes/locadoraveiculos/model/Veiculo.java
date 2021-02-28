@@ -28,6 +28,10 @@ public class Veiculo {
     @Column(name = "marca", nullable = false)
     String marca;
 
+    @OneToOne
+    @JoinColumn(name = "loja_id")
+    Loja loja;
+
     public Veiculo() {
         super();
     }

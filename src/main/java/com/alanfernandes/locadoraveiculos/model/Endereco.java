@@ -12,7 +12,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
-@Entity(name = "endereco")
+@Entity(name = "enderecos")
 @Data
 public class Endereco implements Serializable {
 

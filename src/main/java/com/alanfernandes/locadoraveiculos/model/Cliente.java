@@ -18,7 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "cliente",uniqueConstraints = @UniqueConstraint(columnNames = "cpf"))
+@Table(name = "clientes",uniqueConstraints = @UniqueConstraint(columnNames = "cpf"))
 @Getter
 @Setter
 public class Cliente {
