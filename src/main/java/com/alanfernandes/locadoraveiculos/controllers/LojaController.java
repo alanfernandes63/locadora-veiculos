@@ -1,6 +1,7 @@
 package com.alanfernandes.locadoraveiculos.controllers;
 
 import com.alanfernandes.locadoraveiculos.dto.LojaRequest;
+import com.alanfernandes.locadoraveiculos.dto.LojaResponse;
 import com.alanfernandes.locadoraveiculos.makeResponse.MakeResponse;
 import com.alanfernandes.locadoraveiculos.mapper.EnderecoMapper;
 import com.alanfernandes.locadoraveiculos.mapper.LojaMapper;
@@ -10,6 +11,7 @@ import com.alanfernandes.locadoraveiculos.service.EnderecoService;
 import com.alanfernandes.locadoraveiculos.service.LojaService;
 import com.alanfernandes.locadoraveiculos.service.VeiculoService;
 import javassist.NotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "api/v1/loja")
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class LojaController {
 
     private LojaService lojaService;
@@ -27,38 +30,31 @@ public class LojaController {
 
     private EnderecoMapper enderecoMapper;
 
-    @Autowired
-    public LojaController(LojaService lojaService, EnderecoService enderecoService, LojaMapper lojaMapper,
-                          EnderecoMapper enderecoMapper, VeiculoService veiculoService) {
-        super();
-        this.lojaService = lojaService;
-        this.lojaMapper = lojaMapper;
-        this.enderecoMapper = enderecoMapper;
-    }
-
     @GetMapping(value = "/{id}")
-    public ResponseEntity<MakeResponse<Loja>> findById(@PathVariable Long id) {
-        Loja loja = null;
+    public ResponseEntity<MakeResponse<LojaResponse>> findById(@PathVariable Long id) {
+        LojaResponse lojaResponse = null;
+        MakeResponse<LojaResponse> makeResponse;
         try {
-            loja = this.lojaService.findById(id);
-            return new ResponseEntity<MakeResponse<Loja>>(new MakeResponse<Loja>(loja, "success"), HttpStatus.OK);
+            lojaResponse = lojaMapper.lojaToLojaResponse(this.lojaService.findById(id));
+            makeResponse = new MakeResponse<LojaResponse>(lojaResponse, "success");
+            return new ResponseEntity<MakeResponse<LojaResponse>>(makeResponse, HttpStatus.OK);
         } catch (NotFoundException e) {
-            return new ResponseEntity<MakeResponse<Loja>>(new MakeResponse<Loja>(loja, e.getMessage()),
-                    HttpStatus.BAD_REQUEST);
+            makeResponse = new MakeResponse<LojaResponse>(lojaResponse, e.getMessage());
+            return new ResponseEntity<MakeResponse<LojaResponse>>(makeResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PostMapping()
-    public ResponseEntity<MakeResponse<Loja>> save(@Valid @RequestBody LojaRequest lojaRequest) {
+    @PostMapping
+    public ResponseEntity<MakeResponse<LojaResponse>> save(@Valid @RequestBody LojaRequest lojaRequest) {
 
         Loja loja = lojaMapper.lojaRequestToLoja(lojaRequest);
         Endereco endereco = enderecoMapper
                 .enderecoRequestToEndereco(lojaRequest.getEnderecoRequest());
         loja.setEndereco(endereco);
-        Loja newLoja = lojaService.save(loja);
+        LojaResponse newLoja = lojaMapper.lojaToLojaResponse(lojaService.save(loja));
 
-        MakeResponse<Loja> makeResponse = new MakeResponse<Loja>(newLoja, "succsses");
-        return new ResponseEntity<MakeResponse<Loja>>(makeResponse, HttpStatus.OK);
+        MakeResponse<LojaResponse> makeResponse = new MakeResponse<LojaResponse>(newLoja, "succsses");
+        return new ResponseEntity<MakeResponse<LojaResponse>>(makeResponse, HttpStatus.OK);
 
     }
 
