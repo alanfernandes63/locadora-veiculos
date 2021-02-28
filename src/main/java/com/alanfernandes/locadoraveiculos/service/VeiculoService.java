@@ -1,21 +1,20 @@
 package com.alanfernandes.locadoraveiculos.service;
 
-import java.util.List;
-
-import javax.transaction.Transactional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import com.alanfernandes.locadoraveiculos.dto.VeiculoRequest;
+import com.alanfernandes.locadoraveiculos.dto.VeiculoResponse;
 import com.alanfernandes.locadoraveiculos.mapper.VeiculoMapper;
 import com.alanfernandes.locadoraveiculos.model.Loja;
 import com.alanfernandes.locadoraveiculos.model.Veiculo;
 import com.alanfernandes.locadoraveiculos.repository.VeiculoRepository;
-
 import javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VeiculoService extends GenericService<Veiculo, VeiculoRepository> {
@@ -35,7 +34,7 @@ public class VeiculoService extends GenericService<Veiculo, VeiculoRepository> {
     }
 
     @Transactional
-    public Veiculo save(VeiculoRequest veiculoRequest, Long idLoja) throws NotFoundException {
+    public VeiculoResponse save(VeiculoRequest veiculoRequest, Long idLoja) throws NotFoundException {
 
         Loja loja = lojaService.findById(idLoja);
 
@@ -45,7 +44,7 @@ public class VeiculoService extends GenericService<Veiculo, VeiculoRepository> {
         Assert.isTrue(doesNotExist, "Já existe um veiculo cadastrado com esta placa");
         veiculo.setLoja(loja);
         veiculoRepository.save(veiculo);
-        return veiculo;
+        return veiculoMapper.veiculoToVeiculoResponse(veiculo);
     }
 
     public List<Veiculo> findByMarca(String marca) {
@@ -66,9 +65,12 @@ public class VeiculoService extends GenericService<Veiculo, VeiculoRepository> {
         return veiculo;
     }
 
-    public Page<Veiculo> findByLoja(Long idLoja, Pageable pageable) throws NotFoundException {
+    public List<VeiculoResponse> findByLoja(Long idLoja, Pageable pageable) throws NotFoundException {
         Loja loja = lojaService.findById(idLoja);
 
-        return veiculoRepository.findByLoja(loja, pageable);
+        List<VeiculoResponse> veiculos = veiculoRepository.findByLoja(loja, pageable)
+                .stream()
+                .map(veiculo -> veiculoMapper.veiculoToVeiculoResponse(veiculo)).collect(Collectors.toList());
+        return veiculos;
     }
 }

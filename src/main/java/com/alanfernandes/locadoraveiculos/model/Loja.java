@@ -23,7 +23,7 @@ public class Loja {
     @Column(name = "nome")
     private String nome;
 
-    @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "adress_id", referencedColumnName = "id")
     @JsonManagedReference
     private Endereco endereco;

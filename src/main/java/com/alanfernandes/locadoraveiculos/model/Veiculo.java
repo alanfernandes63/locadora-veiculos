@@ -28,7 +28,7 @@ public class Veiculo {
     @Column(name = "marca", nullable = false)
     String marca;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "loja_id")
     Loja loja;
 
