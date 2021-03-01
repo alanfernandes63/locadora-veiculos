@@ -25,6 +25,5 @@ public class Loja {
 
     @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "adress_id", referencedColumnName = "id")
-    @JsonManagedReference
     private Endereco endereco;
 }

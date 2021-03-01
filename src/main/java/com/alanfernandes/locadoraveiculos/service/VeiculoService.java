@@ -73,4 +73,10 @@ public class VeiculoService extends GenericService<Veiculo, VeiculoRepository> {
                 .map(veiculo -> veiculoMapper.veiculoToVeiculoResponse(veiculo)).collect(Collectors.toList());
         return veiculos;
     }
+
+    @Transactional
+    public Veiculo alterarDisponibilidadeVeiculo(Veiculo veiculo){
+        veiculo.setDisponivel(!veiculo.getDisponivel());
+        return veiculoRepository.save(veiculo);
+    }
 }

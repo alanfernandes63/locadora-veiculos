@@ -9,20 +9,21 @@ import com.alanfernandes.locadoraveiculos.model.Cliente;
 import com.alanfernandes.locadoraveiculos.repository.ClienteRepository;
 
 @Service
-public class ClienteService {
+public class ClienteService extends GenericService<Cliente, ClienteRepository> {
 
-	private ClienteRepository clienteRepository;
+    private ClienteRepository clienteRepository;
 
-	public ClienteService(@Autowired ClienteRepository clienteRepository) {
-		super();
-		this.clienteRepository = clienteRepository;
-	}
+    public ClienteService(@Autowired ClienteRepository clienteRepository) {
+        super();
+        this.clienteRepository = clienteRepository;
+    }
 
-	public Cliente save(Cliente cliente) {
-		return this.clienteRepository.save(cliente);
-	}
+    public Cliente save(Cliente cliente) {
+        return this.clienteRepository.save(cliente);
+    }
 
-	public List<Cliente> findAll() {
-		return this.clienteRepository.findAll();
-	}
+    public List<Cliente> findAll() {
+        return this.clienteRepository.findAll();
+    }
+
 }

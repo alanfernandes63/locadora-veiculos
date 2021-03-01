@@ -15,4 +15,6 @@ public class VeiculoResponse {
     String placa;
 
     String marca;
+
+    Boolean disponivel;
 }
