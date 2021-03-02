@@ -8,6 +8,7 @@ import com.alanfernandes.locadoraveiculos.model.Veiculo;
 import com.alanfernandes.locadoraveiculos.repository.VeiculoRepository;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -65,12 +66,11 @@ public class VeiculoService extends GenericService<Veiculo, VeiculoRepository> {
         return veiculo;
     }
 
-    public List<VeiculoResponse> findByLoja(Long idLoja, Pageable pageable) throws NotFoundException {
+    public Page<VeiculoResponse> findByLoja(Long idLoja, Pageable pageable) throws NotFoundException {
         Loja loja = lojaService.findById(idLoja);
 
-        List<VeiculoResponse> veiculos = veiculoRepository.findByLoja(loja, pageable)
-                .stream()
-                .map(veiculo -> veiculoMapper.veiculoToVeiculoResponse(veiculo)).collect(Collectors.toList());
+        Page<VeiculoResponse> veiculos = veiculoRepository.findByLoja(loja, pageable)
+                .map(veiculoMapper::veiculoToVeiculoResponse);
         return veiculos;
     }
 

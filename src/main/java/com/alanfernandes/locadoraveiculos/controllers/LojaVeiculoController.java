@@ -6,6 +6,7 @@ import com.alanfernandes.locadoraveiculos.makeResponse.MakeResponse;
 import com.alanfernandes.locadoraveiculos.service.VeiculoService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,15 +44,15 @@ public class LojaVeiculoController {
     }
 
     @GetMapping(value = "/{idLoja}/veiculo")
-    public ResponseEntity<MakeResponse<List<VeiculoResponse>>> listarVeiculosPorLoja(@PathVariable Long idLoja, Pageable pageable) {
-        MakeResponse<List<VeiculoResponse>> makeResponse;
+    public ResponseEntity<MakeResponse<Page<VeiculoResponse>>> listarVeiculosPorLoja(@PathVariable Long idLoja, Pageable pageable) {
+        MakeResponse<Page<VeiculoResponse>> makeResponse;
         try {
-            List<VeiculoResponse> veiculos = veiculoService.findByLoja(idLoja, pageable);
-            makeResponse = new MakeResponse<List<VeiculoResponse>>(veiculos, "listado com sucesso!");
-            return new ResponseEntity<MakeResponse<List<VeiculoResponse>>>(makeResponse, HttpStatus.OK);
+            Page<VeiculoResponse> veiculos = veiculoService.findByLoja(idLoja, pageable);
+            makeResponse = new MakeResponse<Page<VeiculoResponse>>(veiculos, "listado com sucesso!");
+            return new ResponseEntity<MakeResponse<Page<VeiculoResponse>>>(makeResponse, HttpStatus.OK);
         } catch (NotFoundException e) {
-            makeResponse = new MakeResponse<List<VeiculoResponse>>(null, e.getMessage());
-            return new ResponseEntity<MakeResponse<List<VeiculoResponse>>>(makeResponse, HttpStatus.BAD_REQUEST);
+            makeResponse = new MakeResponse<Page<VeiculoResponse>>(null, e.getMessage());
+            return new ResponseEntity<MakeResponse<Page<VeiculoResponse>>>(makeResponse, HttpStatus.BAD_REQUEST);
         }
     }
 }
