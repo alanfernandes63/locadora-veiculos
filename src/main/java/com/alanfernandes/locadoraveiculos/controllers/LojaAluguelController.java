@@ -5,6 +5,7 @@ import com.alanfernandes.locadoraveiculos.service.AluguelService;
 import javassist.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class LojaAluguelController {
     }
 
     @GetMapping("/{lojaId}/alugueisVencidos")
-    public List<AluguelResponse> listarAlugueisAtrasados(@PathVariable Long lojaId, Pageable pageable) throws NotFoundException {
+    public Page<AluguelResponse> listarAlugueisAtrasados(@PathVariable Long lojaId, Pageable pageable) throws NotFoundException {
         return aluguelService.listarAtrasados(lojaId, pageable);
     }
 }

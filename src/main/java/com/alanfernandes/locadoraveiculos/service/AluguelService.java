@@ -10,6 +10,7 @@ import com.alanfernandes.locadoraveiculos.repository.AluguelRepository;
 import javassist.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -56,15 +57,12 @@ public class AluguelService {
         return aluguelMapper.aluguelToAluguelResponse(aluguel);
     }
 
-    public List<AluguelResponse> listarAtrasados(Long lojaId, Pageable pageable) throws NotFoundException {
+    public Page<AluguelResponse> listarAtrasados(Long lojaId, Pageable pageable) throws NotFoundException {
         Loja loja = lojaService.findById(lojaId);
         LocalDateTime hoje = LocalDateTime.now();
-        //Boolean indisponivel = false;
-        List<AluguelResponse> alugueisAtrasados = aluguelRepository.findByEntregaBefore(hoje, pageable)
-                .stream()
-                .map(aluguel -> aluguelMapper.aluguelToAluguelResponse(aluguel))
-                .collect(Collectors.toList());
 
+        Page<AluguelResponse> alugueisAtrasados = aluguelRepository.findByLojaAndEntregaBefore(loja, hoje, pageable)
+                .map(aluguelMapper::aluguelToAluguelResponse);
         return alugueisAtrasados;
     }
 }
