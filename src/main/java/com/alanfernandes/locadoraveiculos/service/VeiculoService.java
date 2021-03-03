@@ -7,6 +7,7 @@ import com.alanfernandes.locadoraveiculos.model.Loja;
 import com.alanfernandes.locadoraveiculos.model.Veiculo;
 import com.alanfernandes.locadoraveiculos.repository.VeiculoRepository;
 import javassist.NotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +16,9 @@ import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class VeiculoService extends GenericService<Veiculo, VeiculoRepository> {
 
     private VeiculoRepository veiculoRepository;
@@ -25,14 +26,6 @@ public class VeiculoService extends GenericService<Veiculo, VeiculoRepository> {
     private VeiculoMapper veiculoMapper;
 
     private LojaService lojaService;
-
-    @Autowired
-    public VeiculoService(VeiculoRepository veiculoRepository, VeiculoMapper veiculoMapper, LojaService lojaService) {
-        super();
-        this.veiculoRepository = veiculoRepository;
-        this.veiculoMapper = veiculoMapper;
-        this.lojaService = lojaService;
-    }
 
     @Transactional
     public VeiculoResponse save(VeiculoRequest veiculoRequest, Long idLoja) throws NotFoundException {
@@ -66,6 +59,7 @@ public class VeiculoService extends GenericService<Veiculo, VeiculoRepository> {
         return veiculo;
     }
 
+    @Transactional
     public Page<VeiculoResponse> findByLoja(Long idLoja, Pageable pageable) throws NotFoundException {
         Loja loja = lojaService.findById(idLoja);
 
@@ -75,7 +69,7 @@ public class VeiculoService extends GenericService<Veiculo, VeiculoRepository> {
     }
 
     @Transactional
-    public Veiculo alterarDisponibilidadeVeiculo(Veiculo veiculo){
+    public Veiculo alterarDisponibilidadeVeiculo(Veiculo veiculo) {
         veiculo.setDisponivel(!veiculo.getDisponivel());
         return veiculoRepository.save(veiculo);
     }
