@@ -1,6 +1,7 @@
 package com.alanfernandes.locadoraveiculos.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "veiculos", uniqueConstraints = @UniqueConstraint(columnNames = "placa"))
 @Data
+@NoArgsConstructor
 public class Veiculo {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,9 +45,5 @@ public class Veiculo {
     @JoinColumn(name = "loja_id")
     @NotNull
     Loja loja;
-
-    public Veiculo() {
-        super();
-    }
 
 }
