@@ -1,5 +1,7 @@
 package com.alanfernandes.locadoraveiculos.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +13,8 @@ import javax.validation.constraints.NotNull;
 @Table(name = "veiculos", uniqueConstraints = @UniqueConstraint(columnNames = "placa"))
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Veiculo {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

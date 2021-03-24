@@ -6,19 +6,16 @@ import javax.validation.constraints.NotBlank;
 import com.alanfernandes.locadoraveiculos.enums.UF;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 
 @Entity(name = "enderecos")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Endereco implements Serializable {
-
-    public Endereco() {
-        super();
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
